@@ -54,11 +54,12 @@ async def on_message(message):
         # Выбираем GIF, который еще не был использован этим пользователем
         available_gifs = [gif for gif in gif_urls if gif not in used_gifs.get(user_id, [])]
 
-        # Если все гифки использованы, сбрасываем их и даем возможность снова выбрать
+        # Если нет доступных гифок, сбрасываем их и даем возможность снова выбрать
         if not available_gifs:
             used_gifs[user_id] = []  # Сбросить использованные GIF
             available_gifs = gif_urls  # Даем все гифки снова
 
+        # Выбираем случайную гифку из доступных
         gif_url = random.choice(available_gifs)
 
         # Добавляем выбранный GIF в список использованных
@@ -145,6 +146,7 @@ if __name__ == "__main__":
 
     # Запускаем бота
     bot.run(TOKEN)
+
 
 
 
