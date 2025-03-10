@@ -1,7 +1,6 @@
 import discord
-import random  # Для генерации случайных значений
+import random
 from discord.ext import commands
-from discord import app_commands
 import os
 
 # Настройки бота
@@ -13,9 +12,6 @@ intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 TOKEN = os.getenv('TOKEN')
-
-# Словарь для отслеживания использованных GIF
-used_gifs = {}
 
 # Список возможных GIF
 gif_urls = [
@@ -29,11 +25,11 @@ gif_urls = [
     "https://cdn.jacher.io/f3ac073b88487e1b.gif",
     "https://cdn.discordapp.com/attachments/1207730830487855154/1348367459392159744/attachment.gif?ex=67cf348d&is=67cde30d&hm=c228de0ae418b42862b759ba41e54a2f434d438f22d465bdfb38c5a89ce49e6e&",
     "https://cdn.discordapp.com/attachments/1207730830487855154/1348367494766919740/attachment.gif?ex=67cf3496&is=67cde316&hm=5124d61b87c8cd107cdfd91416e273baedd9550eb44d5f37e123e35805ddcfd2&",
-    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367679962091531/attachment.gif?ex=67cf34c2&is=67cde342&hm=60514011f732c063d000e51c4164f1bfcc8f9e395fac4d336b44316aa6d33645&",
-    "https://tenor.com/view/speech-bubble-gif-26412022",
-    "https://media.discordapp.net/attachments/1055080776808546353/1177601225542352927/attachment.gif?ex=67cee89a&is=67cd971a&hm=54602311db4c7128af5c90aefa3e74a4f78985de1b054016fcb2b694e7f85a4a&",
-    "https://cdn.discordapp.com/attachments/1207730830487855154/1348366855894470697/attachment.gif?ex=67cf33fd&is=67cde27d&hm=b973f19cdfbfbed725153a92c50776435f70ca6181edde63854f3626d93ef791&"
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367679962091531/attachment.gif?ex=67cf34c2&is=67cde342&hm=60514011f732c063d000e51c4164f1bfcc8f9e395fac4d336b44316aa6d33645&"
 ]
+
+# Словарь для отслеживания использованных GIF
+used_gifs = {}
 
 # Обработчик сообщений
 @bot.event
@@ -41,7 +37,7 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    # Проверяем, что бот упомянут в сообщении, и что сообщение не является ответом на его собственное сообщение
+    # Проверяем, что бот упомянут в сообщении и что это не ответ на сообщение бота
     if bot.user in message.mentions and message.reference is None:
         user_id = message.author.id
 
@@ -51,6 +47,9 @@ async def on_message(message):
 
         # Выбираем GIF, который еще не был использован этим пользователем
         available_gifs = [gif for gif in gif_urls if gif not in used_gifs.get(user_id, [])]
+        if not available_gifs:
+            used_gifs[user_id] = []  # Если все гифки использованы, сбрасываем список
+
         gif_url = random.choice(available_gifs)
 
         # Добавляем выбранный GIF в список использованных
@@ -58,70 +57,11 @@ async def on_message(message):
             used_gifs[user_id] = []
         used_gifs[user_id].append(gif_url)
 
+        # Отправляем гифку в ответ на сообщение
         await message.reply(gif_url)
 
-    # Обрабатываем остальные команды только после обработки сообщений
+    # Обрабатываем остальные команды
     await bot.process_commands(message)
-
-# Обработчик слэш-команды /random
-@bot.tree.command(name="random", description="Случайно выбирает между True и False")
-@app_commands.describe(question="Вопрос, на который нужно ответить")
-async def random_command(interaction: discord.Interaction, question: str = None):
-    if question is None:
-        question = "Отсутствует"
-    response = random.choice(["True", "False"])
-
-    embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Вопрос", value=question, inline=False)
-    embed.add_field(name="Случайный ответ", value=response, inline=False)
-
-    await interaction.response.send_message(embed=embed)
-
-# Обработчик слэш-команды /numbersrange
-@bot.tree.command(name="numbersrange", description="Выбирает случайное число в заданном диапазоне")
-@app_commands.describe(start="Начало диапазона (целое число)", end="Конец диапазона (целое число)")
-async def numbersrange_command(interaction: discord.Interaction, start: int, end: int):
-    if start > end:
-        await interaction.response.send_message("Ошибка: начало диапазона больше конца. Попробуйте снова.", ephemeral=True)
-        return
-    
-    random_number = random.randint(start, end)
-
-    embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Диапазон", value=f"{start} - {end}", inline=False)
-    embed.add_field(name="Выбранное число", value=str(random_number), inline=False)
-
-    await interaction.response.send_message(embed=embed)
-
-# Обработчик слэш-команды /calculate
-@bot.tree.command(name="calculate", description="Решает примеры")
-@app_commands.describe(number1="Первое число", operator="Оператор (+, -, *, /)", number2="Второе число")
-async def calculate_command(interaction: discord.Interaction, number1: float, operator: str, number2: float):
-    try:
-        if operator not in ['+', '-', '*', '/']:
-            raise ValueError("Неподдерживаемый оператор. Используйте +, -, *, или /")
-        
-        if operator == '+':
-            result = number1 + number2
-        elif operator == '-':
-            result = number1 - number2
-        elif operator == '*':
-            result = number1 * number2
-        elif operator == '/':
-            if number2 == 0:
-                raise ZeroDivisionError("Деление на ноль невозможно")
-            result = number1 / number2
-
-        if result.is_integer():
-            result = int(result)
-
-        embed = discord.Embed(color=discord.Color.blue())
-        embed.add_field(name="Пример", value=f"{number1} {operator} {number2}", inline=False)
-        embed.add_field(name="Ответ", value=str(result), inline=False)
-
-        await interaction.response.send_message(embed=embed)
-    except Exception as e:
-        await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
 
 # Событие при запуске бота
 @bot.event
@@ -130,5 +70,6 @@ async def on_ready():
 
 # Запуск бота
 bot.run(TOKEN)
+
 
 
