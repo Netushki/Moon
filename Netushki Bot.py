@@ -41,7 +41,7 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    # Проверяем, что бот упомянут в сообщении и что сообщение не является ответом на его собственное сообщение
+    # Проверяем, что бот упомянут в сообщении, и что сообщение не является ответом на его собственное сообщение
     if bot.user in message.mentions and message.reference is None:
         user_id = message.author.id
 
@@ -60,7 +60,7 @@ async def on_message(message):
 
         await message.reply(gif_url)
 
-    # Обрабатываем остальные команды
+    # Обрабатываем остальные команды только после обработки сообщений
     await bot.process_commands(message)
 
 # Обработчик слэш-команды /random
@@ -130,4 +130,5 @@ async def on_ready():
 
 # Запуск бота
 bot.run(TOKEN)
+
 
