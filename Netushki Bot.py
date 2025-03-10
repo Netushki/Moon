@@ -2,6 +2,7 @@ import discord
 import random  # Для генерации случайных значений
 from discord.ext import commands
 from discord import app_commands
+import os
 
 # Настройки бота
 intents = discord.Intents.default()
@@ -10,6 +11,8 @@ intents.guilds = True
 intents.members = True
 intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+TOKEN = os.getenv('TOKEN')
 
 # Словарь для отслеживания использованных GIF
 used_gifs = {}
