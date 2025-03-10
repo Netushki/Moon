@@ -60,7 +60,7 @@ async def on_message(message):
         if not numbers_in_message:
             await message.delete()
             warning = await message.channel.send(
-                f"{message.author.mention}, ваше сообщение должно содержать хотя бы одно число!"
+                f"{message.author.mention}, твоё сообщение должно содержать число больше прошлого на 1, не нарушай цепочку!"
             )
             await warning.delete(delay=3)
             return
