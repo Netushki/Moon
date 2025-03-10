@@ -63,11 +63,11 @@ async def on_message(message):
             used_gifs[user_id] = []
         used_gifs[user_id].append(gif_url)
 
-        # Отправляем только один ответ
+        # Отправляем только один ответ (используем reply, чтобы не создавать дубликаты)
         await message.reply(gif_url)
 
-    # Важно: добавление этой строки для обработки команд после обработки сообщений
-    await bot.process_commands(message)
+    # Убедимся, что не вызываем bot.process_commands дважды
+    return  # Не вызываем bot.process_commands, чтобы не создавать дополнительные ответы
 
 # Обработчик слэш-команды /random
 @bot.tree.command(name="random", description="Случайно выбирает между True и False")
@@ -142,6 +142,7 @@ if __name__ == "__main__":
 
     # Запускаем бота
     bot.run(TOKEN)
+
 
 
 
