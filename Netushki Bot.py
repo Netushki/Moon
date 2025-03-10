@@ -3,6 +3,7 @@ import random
 from discord.ext import commands
 import os
 from flask import Flask
+import threading
 
 # Настройка Flask для поддержки веб-сервиса
 app = Flask(__name__)
@@ -76,14 +77,18 @@ async def on_message(message):
 async def on_ready():
     print(f"Мы вошли как {bot.user}")
 
-# Запуск бота
-if __name__ == "__main__":
-    # Получаем порт из переменной окружения, если она есть
+# Функция для запуска Flask в отдельном потоке
+def run_flask():
     port = int(os.environ.get('PORT', 10000))  # если PORT не задан, используем 10000
     app.run(host='0.0.0.0', port=port)
 
-    # Запускаем бота
-    bot.run(TOKEN)
+# Запуск Flask в отдельном потоке
+flask_thread = threading.Thread(target=run_flask)
+flask_thread.start()
+
+# Запуск бота
+bot.run(TOKEN)
+
 
 
 
