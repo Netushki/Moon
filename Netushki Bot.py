@@ -2,6 +2,14 @@ import discord
 import random
 from discord.ext import commands
 import os
+from flask import Flask
+
+# Настройка Flask для поддержки веб-сервиса
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Bot is running!'
 
 # Настройки бота
 intents = discord.Intents.default()
@@ -69,9 +77,13 @@ async def on_ready():
     print(f"Мы вошли как {bot.user}")
 
 # Запуск бота
-bot.run(TOKEN)
-
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    # Получаем порт из переменной окружения, если она есть
+    port = int(os.environ.get('PORT', 10000))  # если PORT не задан, используем 10000
+    app.run(host='0.0.0.0', port=port)
+
+    # Запускаем бота
+    bot.run(TOKEN)
+
 
 
