@@ -53,6 +53,9 @@ async def on_message(message):
 
         # Выбираем GIF, который еще не был использован этим пользователем
         available_gifs = [gif for gif in gif_urls if gif not in used_gifs.get(user_id, [])]
+        if not available_gifs:
+            used_gifs[user_id] = []  # Если все гифки использованы, сбрасываем список
+
         gif_url = random.choice(available_gifs)
 
         # Добавляем выбранный GIF в список использованных
@@ -60,9 +63,10 @@ async def on_message(message):
             used_gifs[user_id] = []
         used_gifs[user_id].append(gif_url)
 
+        # Отправляем только один ответ
         await message.reply(gif_url)
 
-    # Обрабатываем остальные команды только после обработки сообщений
+    # Важно: добавление этой строки для обработки команд после обработки сообщений
     await bot.process_commands(message)
 
 # Обработчик слэш-команды /random
@@ -138,6 +142,7 @@ if __name__ == "__main__":
 
     # Запускаем бота
     bot.run(TOKEN)
+
 
 
 
