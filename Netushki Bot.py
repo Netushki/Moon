@@ -29,11 +29,11 @@ gif_urls = [
     "https://cdn.jacher.io/f3ac073b88487e1b.gif",
     "https://cdn.discordapp.com/attachments/1207730830487855154/1348367459392159744/attachment.gif?ex=67cf348d&is=67cde30d&hm=c228de0ae418b42862b759ba41e54a2f434d438f22d465bdfb38c5a89ce49e6e&",
     "https://cdn.discordapp.com/attachments/1207730830487855154/1348367494766919740/attachment.gif?ex=67cf3496&is=67cde316&hm=5124d61b87c8cd107cdfd91416e273baedd9550eb44d5f37e123e35805ddcfd2&",
-    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367679962091531/attachment.gif?ex=67cf34c2&is=67cde342&hm=60514011f732c063d000e51c4164f1bfcc8f9e395fac4d336b44316aa6d33645&"
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367679962091531/attachment.gif?ex=67cf34c2&is=67cde342&hm=60514011f732c063d000e51c4164f1bfcc8f9e395fac4d336b44316aa6d33645&",
+    "https://tenor.com/view/speech-bubble-gif-26412022",
+    "https://media.discordapp.net/attachments/1055080776808546353/1177601225542352927/attachment.gif?ex=67cee89a&is=67cd971a&hm=54602311db4c7128af5c90aefa3e74a4f78985de1b054016fcb2b694e7f85a4a&",
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348366855894470697/attachment.gif?ex=67cf33fd&is=67cde27d&hm=b973f19cdfbfbed725153a92c50776435f70ca6181edde63854f3626d93ef791&"
 ]
-
-# Словарь для отслеживания использованных GIF
-used_gifs = {}
 
 # Обработчик сообщений
 @bot.event
@@ -130,3 +130,4 @@ async def on_ready():
 
 # Запуск бота
 bot.run(TOKEN)
+
