@@ -129,4 +129,4 @@ async def on_ready():
     print(f"Мы вошли как {bot.user}")
 
 # Запуск бота
-bot.run('TOKEN')
+bot.run(TOKEN)
