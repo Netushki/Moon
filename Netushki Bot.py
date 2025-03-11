@@ -10,21 +10,19 @@ import requests
 import threading
 from threading import Thread
 import asyncio
+from googletrans import Translator
+from asgiref.wsgi import WsgiToAsgi
+import uvicorn
 
 # Создание Flask-приложения
 app = Flask(__name__)
 
+# Создаем адаптер ASGI для Flask
+asgi_app = WsgiToAsgi(app)
+
 @app.route('/')
 def home():
     return "Бот работает!"
-
-
-# Функция для запуска Flask в отдельном потоке
-def run_flask():
-  app.run_server(debug=True, port=8050, host='0.0.0.0')
-
-# Создаем поток для Flask
-flask_thread = threading.Thread(target=run_flask, daemon=True)
 
 # Настройки бота
 intents = discord.Intents.default()
@@ -260,8 +258,8 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
 # Команда рандомных шуток
-@bot.tree.command(name='joke', description="Рандомно генерирует шутку")
-async def joke(interaction: discord.Interaction):  # Используем interaction вместо ctx
+@bot.tree.command(name='joke', description="Рандомно генерирует шутку и переводит её на русский")
+async def joke(interaction: discord.Interaction):  
     # API для случайной шутки
     url = "https://official-joke-api.appspot.com/random_joke"
     
@@ -273,9 +271,16 @@ async def joke(interaction: discord.Interaction):  # Используем intera
         setup = joke_data['setup']  # Начало шутки
         punchline = joke_data['punchline']  # Концовка шутки
         
-        await interaction.response.send_message(f"{setup} {punchline}")  # Используем send_message для interaction
+        # Переводим шутку на русский
+        translator = Translator()
+        setup_ru = translator.translate(setup, src='en', dest='ru').text
+        punchline_ru = translator.translate(punchline, src='en', dest='ru').text
+        
+        # Отправляем переведенную шутку
+        await interaction.response.send_message(f"Шутка: {setup_ru} {punchline_ru}")  
     else:
-        await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")  # Используем send_message для interaction
+        await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")
+
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
@@ -331,6 +336,15 @@ async def on_ready():
         print("Slash-команды синхронизированы!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
+
+# Функция для запуска Flask в отдельном потоке
+def run_flask():
+    if __name__ == "__main__":
+        uvicorn.run(asgi_app, host="0.0.0.0", port=10000)
+
+# Создаем поток для Flask
+flask_thread = threading.Thread(target=run_flask, daemon=True)
+flask_thread.start()
 
 # Запуск бота (Flask уже запущен в отдельном потоке)
 bot.run(TOKEN)
