@@ -12,6 +12,14 @@ from threading import Thread
 import asyncio
 from googletrans import Translator
 
+async def clear_commands():
+    bot = discord.Client(intents=discord.Intents.default())
+    await bot.login(TOKEN)
+    await bot.application_command_sync(guild=None, delete_all=True)
+    await bot.close()
+
+asyncio.run(clear_commands())
+
 # Создание Flask-приложения
 app = Flask(__name__)
 
