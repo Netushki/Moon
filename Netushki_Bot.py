@@ -261,31 +261,33 @@ TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
-    # Загружаем API-ключ и client_key из переменных окружения
-    apikey = os.getenv('TENOR_API_KEY')  # Не используйте API-ключ в коде напрямую
-    ckey = "my_test_app"  # set the client_key for the integration and use the same value for all API calls
-    search_term = "geometry dash"  # Поиск по слову "geometry dash"
-    lmt = 1  # Лимит на 1 GIF
+    apikey = os.getenv('TENOR_API_KEY')
+    ckey = "my_test_app"
+    search_term = "geometry dash"
+    lmt = 1
 
-    # Формируем URL для запроса
     url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            top_8gifs = response.json()  # Делаем парсинг JSON-ответа
+            data = response.json()  # Разбираем JSON
+            
+            # Выводим JSON в консоль для отладки
+            print("Ответ от Tenor API:", data)
 
-            # Проверяем, что есть результаты и отправляем ссылку на гифку
-            if top_8gifs.get('results'):
-                gif_url = top_8gifs['results'][0]['url']  # Получаем ссылку на первую гифку
-                await interaction.followup.send(gif_url)  # Отправляем ссылку на гифку
+            # Проверяем, есть ли результаты
+            if 'results' in data and data['results']:
+                gif_url = data['results'][0]['url']  # Берем URL GIF
+                await interaction.followup.send(gif_url)  # Отправляем ссылку
             else:
-                await interaction.followup.send("Не удалось найти гифку. Попробуйте снова.")
+                await interaction.followup.send("Гифка не найдена.")
         else:
-            await interaction.followup.send(f"Не удалось получить гифку. Статус: {response.status_code}")
+            await interaction.followup.send(f"Ошибка API Tenor: {response.status_code}")
     except Exception as e:
-        await interaction.followup.send(f"Произошла ошибка при запросе: {str(e)}")
-        print(f"Error: {e}")
+        await interaction.followup.send("Произошла ошибка при запросе GIF.")
+        print("Ошибка:", e)
+
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
