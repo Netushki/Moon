@@ -159,6 +159,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
     except Exception as e:
         await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
 
+# Команда ссылок
 @bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
 async def links_command(interaction: discord.Interaction):
     embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
@@ -188,6 +189,47 @@ async def links_command(interaction: discord.Interaction):
         ),
         inline=False
     )
+
+    await interaction.response.send_message(embed=embed)
+
+# Команда выбора рандомного варианта
+@bot.tree.command(name="choose", description="Выбирает случайный вариант из предложенных")
+@app_commands.describe(
+    option1="Обязательный вариант 1",
+    option2="Обязательный вариант 2",
+    option3="Дополнительный вариант",
+    option4="Дополнительный вариант",
+    option5="Дополнительный вариант",
+    option6="Дополнительный вариант",
+    option7="Дополнительный вариант",
+    option8="Дополнительный вариант",
+    option9="Дополнительный вариант",
+    option10="Дополнительный вариант"
+)
+async def choose_command(
+    interaction: discord.Interaction,
+    option1: str,
+    option2: str,
+    option3: str = None,
+    option4: str = None,
+    option5: str = None,
+    option6: str = None,
+    option7: str = None,
+    option8: str = None,
+    option9: str = None,
+    option10: str = None
+):
+    options = [option1, option2]
+    extra_options = [option3, option4, option5, option6, option7, option8, option9, option10]
+    
+    # Добавляем дополнительные опции, если они не пустые
+    options.extend(filter(None, extra_options))
+
+    chosen_option = random.choice(options)  # Выбираем случайный вариант
+
+    embed = discord.Embed(title="🎲 Случайный выбор", color=discord.Color.blue())
+    embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
+    embed.add_field(name="✅ Выбрано", value=f"**{chosen_option}**", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
