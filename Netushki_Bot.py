@@ -257,11 +257,6 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 # Рандомная гифка гд
 TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 
-import discord
-import requests
-import json
-import os
-
 @bot.tree.command(name='gdgif', description="Отправляет рандомную GIF про Geometry Dash с Tenor")
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
@@ -278,22 +273,19 @@ async def gif(interaction: discord.Interaction):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            gif_data = response.json()  # Дожидаемся JSON-ответа
+            top_8gifs = response.json()  # Делаем парсинг JSON-ответа
 
-            # Проверяем, что в ответе есть результаты
-            if 'results' in gif_data and len(gif_data['results']) > 0:
-                gif_url = gif_data['results'][0]['media'][0]['gif']['url']
-                await interaction.followup.send(gif_url)  # Отправляем гифку
+            # Проверяем, что есть результаты и отправляем ссылку на гифку
+            if top_8gifs.get('results'):
+                gif_url = top_8gifs['results'][0]['url']  # Получаем ссылку на первую гифку
+                await interaction.followup.send(gif_url)  # Отправляем ссылку на гифку
             else:
                 await interaction.followup.send("Не удалось найти гифку. Попробуйте снова.")
         else:
             await interaction.followup.send(f"Не удалось получить гифку. Статус: {response.status_code}")
-            print(f"Request failed with status: {response.status_code}")
-            print(response.text())  # Выводим текст ошибки для отладки
     except Exception as e:
         await interaction.followup.send(f"Произошла ошибка при запросе: {str(e)}")
         print(f"Error: {e}")
-
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
