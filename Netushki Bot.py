@@ -184,7 +184,7 @@ async def links_command(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="**Остальное**",
+        name="Остальное",
         value="Донат (Donation Alerts): [Поддержать](https://www.donationalerts.com/r/netushki)",
         inline=False
     )
@@ -227,7 +227,7 @@ async def choose_command(
 
     chosen_option = random.choice(options)  # Выбираем случайный вариант
 
-    embed = discord.Embed(title="🎲 Случайный выбор", color=discord.Color.blue())
+    embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
     embed.add_field(name="✅ Выбрано", value=f"- {chosen_option}", inline=False)
 
