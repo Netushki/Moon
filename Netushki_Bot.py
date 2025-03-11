@@ -328,12 +328,13 @@ async def morse(interaction: discord.Interaction, *, text: str):  # Исполь
 # Синхронизация команд при запуске
 @bot.event
 async def on_ready():
-    print(f"Logged in as {bot.user}!")
+    await asyncio.sleep(3)  # Даем боту немного времени перед синхронизацией
     try:
         await bot.tree.sync()
-        print("Slash-команды обновлены!")
+        print("Slash-команды успешно синхронизированы!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
+    print(f"Бот {bot.user} запущен и готов к работе!")
 
 # Запускаем Flask в отдельном потоке
 flask_thread = threading.Thread(target=run_flask, daemon=True)
