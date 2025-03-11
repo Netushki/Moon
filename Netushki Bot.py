@@ -272,13 +272,13 @@ async def end_game_after_timeout(channel_id):
     if channel_id in games:
         del games[channel_id]  # Закончить игру из-за неактивности
         channel = bot.get_channel(channel_id)
-        await channel.send("Игра закончена из-за неактивности в течение 5 минут.")
+        await channel.send("Игра закончена из-за неактивности в течение 5 минут.")  # (шарик)
 
 # Команда для старта игры с возможностью задать время (шарик)
 @bot.command(name='шарик')
 async def start_game(ctx, time_limit: int = 0):
-    if ctx.channel.id in games:
-        await ctx.send("Игра уже запущена в этом канале!")
+    if ctx.channel.id in games:  # Проверка, если игра уже начата (шарик)
+        await ctx.send("Игра уже запущена в этом канале!")  # (шарик)
         return
 
     # Загадать случайное число от 1 до 100 (шарик)
@@ -286,22 +286,20 @@ async def start_game(ctx, time_limit: int = 0):
     games[ctx.channel.id] = {
         "secret_number": secret_number,
         "players": {},
-        "start_time": asyncio.get_event_loop().time(),  # Время начала игры
-        "time_limit": time_limit
+        "start_time": asyncio.get_event_loop().time(),  # Время начала игры (шарик)
+        "time_limit": time_limit  # (шарик)
     }
 
     await ctx.send(f"Игра началась! Угадайте число от 1 до 100. Попробуйте угадать, отправив команду `/угадать [число]`.")
 
-    if time_limit > 0:
-        await ctx.send(f"У вас есть {time_limit} минут на угадывание.")
-
+    if time_limit > 0:  # Если есть временной лимит (шарик)
+        await ctx.send(f"У вас есть {time_limit} минут на угадывание.")  # (шарик)
         # Запуск таймера на окончание игры по времени (шарик)
         asyncio.create_task(end_game_after_timeout(ctx.channel.id))
 
 # Команда для угадывания числа (шарик)
 @bot.command(name='угадать')
 async def guess_number(ctx, guess: int):
-
     # Проверка, запущена ли игра в этом канале (шарик)
     if ctx.channel.id not in games:
         await ctx.send("Игра не началась. Используйте команду `/шарик`, чтобы начать.")
@@ -312,7 +310,7 @@ async def guess_number(ctx, guess: int):
 
     # Проверка, делал ли игрок уже попытку (шарик)
     if ctx.author.id in game["players"]:
-        await ctx.send(f"{ctx.author.mention}, вы уже пытались угадать число.")
+        await ctx.send(f"{ctx.author.mention}, вы уже пытались угадать число.")  # (шарик)
         return
 
     # Добавление игрока (шарик)
@@ -320,17 +318,18 @@ async def guess_number(ctx, guess: int):
 
     # Проверка угадал ли игрок (шарик)
     if guess < secret_number:
-        await ctx.send(f"{ctx.author.mention}, ваше число меньше!")
+        await ctx.send(f"{ctx.author.mention}, ваше число меньше!")  # (шарик)
     elif guess > secret_number:
-        await ctx.send(f"{ctx.author.mention}, ваше число больше!")
+        await ctx.send(f"{ctx.author.mention}, ваше число больше!")  # (шарик)
     else:
-        await ctx.send(f"{ctx.author.mention}, поздравляю! Вы угадали число {secret_number}!")
+        await ctx.send(f"{ctx.author.mention}, поздравляю! Вы угадали число {secret_number}!")  # (шарик)
         del games[ctx.channel.id]  # Закрытие игры после правильного ответа (шарик)
 
     # Проверка, если время вышло (шарик)
-    if game["time_limit"] > 0 and asyncio.get_event_loop().time() - game["start_time"] > game["time_limit"] * 60:
-        del games[ctx.channel.id]
-        await ctx.send(f"Время игры истекло! Игра завершена.")
+    if game["time_limit"] > 0 and asyncio.get_event_loop().time() - game["start_time"] > game["time_limit"] * 60:  # (шарик)
+        del games[ctx.channel.id]  # (шарик)
+        await ctx.send(f"Время игры истекло! Игра завершена.")  # (шарик)
+
 
 
 # Запуск Flask в отдельном потоке
