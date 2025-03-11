@@ -395,12 +395,9 @@ async def morse(ctx, *, text: str):
 
 # Синхронизация команд с сервером
 @bot.event
-async def on_ready():
-    print(f'Мы подключились как {bot.user}')
-    
-    # Синхронизация команд на тестовом сервере
-    await bot.tree.sync(guild=discord.Object(id=1348987693014450229))  # Указываем ID тестового сервера
-    print("Команды синхронизированы с сервером.")
+async def on_connect():
+    guild = discord.Object(id=123456789012345678)
+    await bot.tree.sync(guild=guild)
 
 # Запуск Flask в отдельном потоке
 Thread(target=run_flask).start()
