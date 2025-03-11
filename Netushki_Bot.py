@@ -330,7 +330,7 @@ async def morse(interaction: discord.Interaction, *, text: str):  # Исполь
 async def on_ready():
     await asyncio.sleep(3)  # Даем боту немного времени перед синхронизацией
     try:
-        await bot.tree.sync()
+        await bot.tree.sync(guild=None)
         print("Slash-команды успешно синхронизированы!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
