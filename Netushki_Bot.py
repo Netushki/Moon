@@ -12,12 +12,6 @@ from threading import Thread
 import asyncio
 from googletrans import Translator
 
-async def clear_commands():
-    bot = discord.Client(intents=discord.Intents.default())
-    await bot.login(TOKEN)
-    await bot.application_command_sync(guild=None, delete_all=True)
-    await bot.close()
-
 asyncio.run(clear_commands())
 
 # Создание Flask-приложения
@@ -34,6 +28,14 @@ intents.guilds = True
 intents.members = True
 intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
+
+async def clear_commands():
+    bot = discord.Client(intents=discord.Intents.default())
+    await bot.login(TOKEN)
+    await bot.application_command_sync(guild=None, delete_all=True)
+    await bot.close()
+
+asyncio.run(clear_commands())
 
 # Функция для запуска Flask в отдельном потоке
 def run_flask():
