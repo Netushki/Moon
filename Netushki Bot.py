@@ -320,7 +320,7 @@ def to_morse(text):
 @bot.tree.command(name='morse', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
 async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
-    await interaction.response.send_message(f"Код Морзе: {morse_text}")  # Используем send_message для interaction
+    await interaction.response.send_message(morse_text)  # Используем send_message для interaction
 
 # Синхронизация команд при запуске
 @bot.event
