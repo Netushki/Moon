@@ -56,10 +56,11 @@ async def on_message(message):
         return
 
     if bot.user in message.mentions and message.reference is None:
-        gif_url = random.choice(gif_urls)  # Просто выбираем случайный GIF
-        await message.reply(gif_url)
+        response_gif = random.choice(gif_urls)  # Выбираем ОДИН случайный GIF
+        await message.reply(response_gif)  # Отправляем его
+        return  # Прерываем дальнейшую обработку, если не нужно
 
-    await bot.process_commands(message)  # Обрабатываем другие команды
+    await bot.process_commands(message)  # Обрабатываем остальные команды
     
     # Проверка сообщений в канале считалки
     if message.channel.id == COUNTING_CHANNEL_ID:
