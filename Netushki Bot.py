@@ -21,7 +21,8 @@ def home():
 
 # Функция для запуска Flask в отдельном потоке
 def run_flask():
-    app.run(host='0.0.0.0', port=10000)
+    if __name__ == "__main__":
+     app.run(host="0.0.0.0", port=10000)
 
 # Создаем поток для Flask
 flask_thread = threading.Thread(target=run_flask, daemon=True)
