@@ -257,28 +257,43 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 # Рандомная гифка гд
 TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 
+import discord
+import requests
+import json
+import os
+
 @bot.tree.command(name='gdgif', description="Отправляет рандомную GIF про Geometry Dash с Tenor")
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
-# set the apikey and limit
-apikey = "AIzaSyBi3cyELEMkerM6bgtKKj4vbe_hDu_JH3A"  # click to set to your apikey
-lmt = 1
-ckey = "my_test_app"  # set the client_key for the integration and use the same value for all API calls
+    # Загружаем API-ключ и client_key из переменных окружения
+    apikey = os.getenv('TENOR_API_KEY')  # Не используйте API-ключ в коде напрямую
+    ckey = "my_test_app"  # set the client_key for the integration and use the same value for all API calls
+    search_term = "geometry dash"  # Поиск по слову "geometry dash"
+    lmt = 1  # Лимит на 1 GIF
 
-# our test search
-search_term = "geometry dash"
+    # Формируем URL для запроса
+    url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
-# get the top 8 GIFs for the search term
-r = requests.get(
-    "https://tenor.googleapis.com/v2/search?q=%s&key=%s&client_key=%s&limit=%s" % (search_term, apikey, ckey,  lmt))
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            gif_data = response.json()  # Дожидаемся JSON-ответа
 
-if r.status_code == 200:
-    # load the GIFs using the urls for the smaller GIF sizes
-    top_8gifs = json.loads(r.content)
-    print(top_8gifs)
-else:
-    top_8gifs = None
+            # Проверяем, что в ответе есть результаты
+            if 'results' in gif_data and len(gif_data['results']) > 0:
+                gif_url = gif_data['results'][0]['media'][0]['gif']['url']
+                await interaction.followup.send(gif_url)  # Отправляем гифку
+            else:
+                await interaction.followup.send("Не удалось найти гифку. Попробуйте снова.")
+        else:
+            await interaction.followup.send(f"Не удалось получить гифку. Статус: {response.status_code}")
+            print(f"Request failed with status: {response.status_code}")
+            print(response.text())  # Выводим текст ошибки для отладки
+    except Exception as e:
+        await interaction.followup.send(f"Произошла ошибка при запросе: {str(e)}")
+        print(f"Error: {e}")
+
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
