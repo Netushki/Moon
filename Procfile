@@ -1,1 +1,1 @@
-web: python Netushki Bot.py
+web: python "Netushki Bot.py"
