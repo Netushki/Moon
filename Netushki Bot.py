@@ -261,7 +261,7 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
 # Команда рандомных шуток
-@bot.tree.command(name='шутка')
+@bot.tree.command(name='joke', description="Рандомно генерирует шутку")
 async def joke(ctx):
     # API для случайной шутки
     url = "https://official-joke-api.appspot.com/random_joke"
