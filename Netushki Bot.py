@@ -329,6 +329,7 @@ async def on_ready():
 
     try:
         await bot.tree.sync()
+        bot.tree.remove_command('random', type=discord.app_commands.Command)
         print("Slash-команды синхронизированы!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
