@@ -256,6 +256,26 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
+# Рандомная гифка
+TENOR_API_KEY = os.getenv('TENOR_API_KEY')
+
+@bot.tree.command(name='gif', description="Отправляет рандомную GIF с Tenor")
+async def gif(interaction: discord.Interaction):  
+    await interaction.response.defer()  # Отложенный ответ
+
+    url = f"https://api.tenor.com/v1/random?key={TENOR_API_KEY}&tag=&limit=1"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                gif_data = await response.json()  # Дожидаемся JSON-ответа
+
+                # Получаем URL первой гифки из ответа
+                gif_url = gif_data['results'][0]['media'][0]['gif']['url']
+                await interaction.followup.send(gif_url)  # Отправляем гифку
+            else:
+                await interaction.followup.send("Не удалось получить гифку. Попробуйте позже.")
+
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
