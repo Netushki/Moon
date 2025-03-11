@@ -264,10 +264,9 @@ async def gif(interaction: discord.Interaction):
     apikey = os.getenv('TENOR_API_KEY')
     ckey = "my_test_app"
     search_term = "geometry dash"
-    lmt = 10  # Количество гифок (нам нужна 1)
+    lmt = 10  # Берём больше гифок, чтобы выбрать случайную
 
-    # Используем эндпоинт random вместо search
-    url = f"https://tenor.googleapis.com/v2/random?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
+    url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
     try:
         response = requests.get(url)
@@ -275,15 +274,17 @@ async def gif(interaction: discord.Interaction):
             data = response.json()
 
             if 'results' in data and data['results']:
-                gif_url = data['results'][0]['url']  # Берем случайную гифку
+                # Выбираем случайную гифку из полученного списка
+                gif_url = random.choice(data['results'])['url']
                 await interaction.followup.send(gif_url)
             else:
-                await interaction.followup.send("Не удалось найти случайную гифку.")
+                await interaction.followup.send("Не удалось найти гифку.")
         else:
             await interaction.followup.send(f"Ошибка API Tenor: {response.status_code}")
     except Exception as e:
         await interaction.followup.send("Произошла ошибка при запросе GIF.")
         print("Ошибка:", e)
+
 
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
