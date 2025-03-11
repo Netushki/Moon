@@ -168,8 +168,8 @@ async def links_command(interaction: discord.Interaction):
     embed.add_field(
         name="**Просмотр**",
         value=(
-            "**YouTube:** [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
-            "**Twitch:** [Смотреть](https://www.twitch.tv/snow_netushki)"
+            "YouTube: [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
+            "Twitch: [Смотреть](https://www.twitch.tv/snow_netushki)"
         ),
         inline=False
     )
@@ -177,15 +177,15 @@ async def links_command(interaction: discord.Interaction):
     embed.add_field(
         name="**Посты и чат**",
         value=(
-            "**Telegram Канал:** [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
-            "**Discord Сервер:** [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
+            "Telegram Канал: [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
+            "Discord Сервер: [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
         ),
         inline=False
     )
 
     embed.add_field(
         name="**Остальное**",
-        value="**Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)",
+        value="Донат (Donation Alerts): [Поддержать](https://www.donationalerts.com/r/netushki)",
         inline=False
     )
 
