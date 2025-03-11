@@ -99,10 +99,10 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-    # Обработчик слэш-команды /random
-@bot.tree.command(name="random", description="Случайно выбирает между True и False")
+# Обработчик слэш-команды /boolean
+@bot.tree.command(name="boolean", description="Случайно выбирает между True и False")
 @app_commands.describe(question="Вопрос, на который нужно ответить")
-async def random_command(interaction: discord.Interaction, question: str = None):
+async def boolean_command(interaction: discord.Interaction, question: str = None):
     if question is None:
         question = "Отсутствует"
     response = random.choice(["True", "False"])
@@ -158,6 +158,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
         await interaction.response.send_message(embed=embed)
     except Exception as e:
         await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
+
 
 # Команда ссылок
 @bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
@@ -232,6 +233,36 @@ async def choose_command(
     embed.add_field(name="✅ Выбрано", value=f"**{chosen_option}**", inline=False)
 
     await interaction.response.send_message(embed=embed)
+
+# Команда чтобы получить аватар пользователя
+@bot.tree.command(name="avatar", description="Получает аватар указанного пользователя")
+@app_commands.describe(user="Пользователь, чей аватар вы хотите увидеть")
+async def avatar_command(interaction: discord.Interaction, user: discord.Member):
+    embed = discord.Embed(title=f"Вот аватар пользователя {user.display_name}", color=discord.Color.blue())
+    embed.set_image(url=user.avatar.url if user.avatar else user.default_avatar.url)
+
+    await interaction.response.send_message(embed=embed)
+
+import asyncio
+
+# Команда таймера
+@bot.tree.command(name="timer", description="Устанавливает таймер, а потом пингует вас")
+@app_commands.describe(seconds="Секунды", minutes="Минуты", hours="Часы")
+async def timer_command(interaction: discord.Interaction, seconds: int = 0, minutes: int = 0, hours: int = 0):
+    total_seconds = (hours * 3600) + (minutes * 60) + seconds
+
+    if total_seconds <= 0:
+        await interaction.response.send_message("Вы не ввели ни секунды, ни минуты, ни часы!", ephemeral=True)
+        return
+
+    # Формируем текст для встроенного отсчета времени
+    timer_message = f"Таймер сработает через <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R> ⏳"
+    await interaction.response.send_message(timer_message)
+
+    await asyncio.sleep(total_seconds)  # Ожидание заданного времени
+
+    await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
+
 
 # Запуск Flask в отдельном потоке
 Thread(target=run_flask).start()
