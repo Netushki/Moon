@@ -149,8 +149,13 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
                 raise ZeroDivisionError("Деление на ноль невозможно")
             result = number1 / number2
 
+        # Убираем .0, если результат целое число
         if result.is_integer():
             result = int(result)
+
+        # Преобразуем числа в строки без лишних нулей после запятой
+        number1 = str(int(number1)) if number1.is_integer() else str(number1)
+        number2 = str(int(number2)) if number2.is_integer() else str(number2)
 
         embed = discord.Embed(color=discord.Color.blue())
         embed.add_field(name="Пример", value=f"{number1} {operator} {number2}", inline=False)
@@ -159,6 +164,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
         await interaction.response.send_message(embed=embed)
     except Exception as e:
         await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
+
 
 
 # Команда ссылок
