@@ -330,7 +330,6 @@ async def morse(interaction: discord.Interaction, *, text: str):  # Исполь
 async def on_ready():
     print(f"Logged in as {bot.user}!")
     try:
-        bot.tree.clear_commands(guild=None)  # Очистка команд
         await bot.tree.sync()
         print("Slash-команды обновлены!")
     except Exception as e:
