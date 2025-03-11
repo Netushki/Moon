@@ -12,8 +12,6 @@ from threading import Thread
 import asyncio
 from googletrans import Translator
 
-asyncio.run(clear_commands())
-
 # Создание Flask-приложения
 app = Flask(__name__)
 
