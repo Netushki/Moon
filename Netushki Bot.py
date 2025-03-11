@@ -385,10 +385,12 @@ async def morse(ctx, *, text: str):
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
 
 # Запуск Flask в отдельном потоке
-Thread(target=run_flask).start()
+def run_flask():
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 10000)), debug=False, use_reloader=False)
 
-# Запуск бота
-bot.run(TOKEN)
+if __name__ == "__main__":
+    Thread(target=run_flask, daemon=True).start()  # Запускаем Flask в фоновом потоке
+    bot.run(TOKEN)  # Запускаем бота в основном потоке
 
 
 
