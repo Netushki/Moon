@@ -159,6 +159,38 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
     except Exception as e:
         await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
 
+@bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
+async def links_command(interaction: discord.Interaction):
+    embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
+
+    embed.add_field(
+        name="### Просмотр",
+        value=(
+            "<:YouTube:1311661038453788772> **YouTube:** [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
+            "<:Twitch:1333125928426930236> **Twitch:** [Смотреть](https://www.twitch.tv/snow_netushki)"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="### Посты и чат",
+        value=(
+            "<:Telegram:1311660935139823697> **Telegram Канал:** [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
+            "<:Discord:1330215982416789595> **Discord Сервер:** [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
+        ),
+        inline=False
+    )
+
+    embed.add_field(
+        name="### Остальное",
+        value=(
+            "<:DonationAlerts:1311660998481940542> **Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)"
+        ),
+        inline=False
+    )
+
+    await interaction.response.send_message(embed=embed)
+
 # Запуск Flask в отдельном потоке
 Thread(target=run_flask).start()
 
