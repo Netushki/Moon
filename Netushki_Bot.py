@@ -32,6 +32,11 @@ intents.members = True
 intents.messages = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+# Функция для запуска Flask в отдельном потоке
+def run_flask():
+    if __name__ == "__main__":
+        uvicorn.run(asgi_app, host="0.0.0.0", port=10000)
+
 TOKEN = os.getenv('TOKEN')
 
 # ID каналов
@@ -336,11 +341,6 @@ async def on_ready():
         print("Slash-команды синхронизированы!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
-
-# Функция для запуска Flask в отдельном потоке
-def run_flask():
-    if __name__ == "__main__":
-        uvicorn.run(asgi_app, host="0.0.0.0", port=10000)
 
 # Создаем поток для Flask
 flask_thread = threading.Thread(target=run_flask, daemon=True)
