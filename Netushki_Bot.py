@@ -256,30 +256,6 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
-# Команда шуток
-@bot.tree.command(name='joke', description="Рандомно генерирует шутку на русском языке")
-async def joke(interaction: discord.Interaction):  
-    url = "https://v2.jokeapi.dev/joke/Any?lang=ru"
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            if response.status == 200:
-                joke_data = await response.json()  # Дожидаемся JSON-ответа
-
-                if joke_data.get('type') == 'single':
-                    # Если шутка одна строка
-                    joke_text = joke_data.get('joke', 'Неизвестная шутка')
-                    await interaction.response.send_message(joke_text)  
-                elif joke_data.get('type') == 'twopart':
-                    # Если шутка состоит из setup и punchline
-                    setup = joke_data.get('setup', 'Неизвестный setup')  
-                    punchline = joke_data.get('delivery', 'Неизвестная концовка')
-
-                    await interaction.response.send_message(f"{setup}\n {punchline}")  
-            else:
-                await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")
-
-
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
