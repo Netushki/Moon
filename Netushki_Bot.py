@@ -341,12 +341,13 @@ async def on_ready():
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
 
+# Функция для запуска бота в другом потоке
+def run_bot():
+    bot.run(TOKEN)  # Здесь ваш токен Discord-бота
+
 # Создаем поток для Flask
 flask_thread = threading.Thread(target=run_flask, daemon=True)
 flask_thread.start()
 
 # Запуск бота (Flask уже запущен в отдельном потоке)
-bot.run(TOKEN)
-
-# Запуск бота (Flask уже запущен в отдельном потоке)
-bot.run(TOKEN)
+run_bot()
