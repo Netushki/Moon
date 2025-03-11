@@ -1,6 +1,3 @@
 discord.py
 flask
 requests
-googletrans
-uvicorn
-asgiref
