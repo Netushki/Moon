@@ -163,7 +163,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
 # Команда ссылок
 @bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
 async def links_command(interaction: discord.Interaction):
-    embed = discord.Embed(title="Соцсети Netushki", color=discord.Color.blue())
+    embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
 
     embed.add_field(
         name="**Просмотр**",
