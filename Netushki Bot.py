@@ -262,7 +262,7 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 
 # Команда рандомных шуток
 @bot.tree.command(name='joke', description="Рандомно генерирует шутку")
-async def joke(ctx):
+async def joke(interaction: discord.Interaction):  # Используем interaction вместо ctx
     # API для случайной шутки
     url = "https://official-joke-api.appspot.com/random_joke"
     
@@ -274,9 +274,9 @@ async def joke(ctx):
         setup = joke_data['setup']  # Начало шутки
         punchline = joke_data['punchline']  # Концовка шутки
         
-        await ctx.send(f"{setup} {punchline}")  # Отправляем шутку в чат
+        await interaction.response.send_message(f"{setup} {punchline}")  # Используем send_message для interaction
     else:
-        await ctx.send("Не удалось получить шутку. Попробуйте позже.")  # В случае ошибки
+        await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")  # Используем send_message для interaction
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
@@ -318,9 +318,9 @@ def to_morse(text):
 
 # Команда для преобразования текста в код Морзе (морзе)
 @bot.tree.command(name='morse', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
-async def morse(ctx, *, text: str):
+async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
-    await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
+    await interaction.response.send_message(f"Код Морзе: {morse_text}")  # Используем send_message для interaction
 
 # Синхронизация команд при запуске
 @bot.event
