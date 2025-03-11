@@ -11,14 +11,9 @@ import threading
 from threading import Thread
 import asyncio
 from googletrans import Translator
-from asgiref.wsgi import WsgiToAsgi
-import uvicorn
 
 # Создание Flask-приложения
 app = Flask(__name__)
-
-# Создаем адаптер ASGI для Flask
-asgi_app = WsgiToAsgi(app)
 
 @app.route('/')
 def home():
@@ -34,7 +29,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Функция для запуска Flask в отдельном потоке
 def run_flask():
-    uvicorn.run(asgi_app, host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=10000)
 
 TOKEN = os.getenv('TOKEN')
 
@@ -341,13 +336,9 @@ async def on_ready():
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
 
-# Функция для запуска бота в другом потоке
-def run_bot():
-    bot.run(TOKEN)  # Здесь ваш токен Discord-бота
-
-# Создаем поток для Flask
+# Запускаем Flask в отдельном потоке
 flask_thread = threading.Thread(target=run_flask, daemon=True)
 flask_thread.start()
 
-# Запуск бота (Flask уже запущен в отдельном потоке)
-run_bot()
+# Запускаем бота
+bot.run(TOKEN)  # Замените на свой токен бота
