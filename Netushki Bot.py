@@ -18,6 +18,7 @@ app = Flask(__name__)
 def home():
     return "Бот работает!"
 
+
 # Функция для запуска Flask в отдельном потоке
 def run_flask():
     port = int(os.getenv("PORT", 10000))  # По умолчанию 10000, если переменная не задана
@@ -165,27 +166,27 @@ async def links_command(interaction: discord.Interaction):
     embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
 
     embed.add_field(
-        name="### Просмотр",
+        name="Просмотр",
         value=(
-            "<:YouTube:1311661038453788772> **YouTube:** [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
+            "**YouTube:** [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
             "<:Twitch:1333125928426930236> **Twitch:** [Смотреть](https://www.twitch.tv/snow_netushki)"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="### Посты и чат",
+        name="Посты и чат",
         value=(
-            "<:Telegram:1311660935139823697> **Telegram Канал:** [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
-            "<:Discord:1330215982416789595> **Discord Сервер:** [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
+            "**Telegram Канал:** [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
+            "**Discord Сервер:** [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="### Остальное",
+        name="Остальное",
         value=(
-            "<:DonationAlerts:1311660998481940542> **Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)"
+            "**Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)"
         ),
         inline=False
     )
@@ -229,7 +230,7 @@ async def choose_command(
 
     embed = discord.Embed(title="🎲 Случайный выбор", color=discord.Color.blue())
     embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
-    embed.add_field(name="✅ Выбрано", value=f"**{chosen_option}**", inline=False)
+    embed.add_field(name="✅ Выбрано", value=f"- {chosen_option}", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
@@ -261,7 +262,7 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
 # Команда рандомных шуток
-@bot.command(name='шутка')
+@bot.tree.command(name='шутка')
 async def joke(ctx):
     # API для случайной шутки
     url = "https://official-joke-api.appspot.com/random_joke"
@@ -317,7 +318,7 @@ def to_morse(text):
     return ' '.join(morse_code)
 
 # Команда для преобразования текста в код Морзе (морзе)
-@bot.command(name='morse', help="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
+@bot.tree.command(name='morse', help="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
 async def morse(ctx, *, text: str):
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
@@ -335,14 +336,3 @@ async def on_ready():
 
 # Запуск бота (Flask уже запущен в отдельном потоке)
 bot.run(TOKEN)
-
-
-
-
-
-
-
-
-
-
-
