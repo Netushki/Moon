@@ -393,7 +393,14 @@ async def morse(ctx, *, text: str):
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
 
-
+# Синхронизация команд с сервером
+@bot.event
+async def on_ready():
+    print(f'Мы подключились как {bot.user}')
+    
+    # Синхронизация команд на тестовом сервере
+    await bot.tree.sync(guild=discord.Object(id=1348987693014450229))  # Указываем ID тестового сервера
+    print("Команды синхронизированы с сервером.")
 
 # Запуск Flask в отдельном потоке
 Thread(target=run_flask).start()
