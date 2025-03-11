@@ -37,45 +37,29 @@ SCREENSHOT_CHANNEL_ID = 1344388680953106512  # Канал скриншотов
 def find_numbers(text):
     return [int(num) for num in re.findall(r'\b\d+\b', text)]  # Ищет все числа в тексте
 
-# Словарь для отслеживания использованных GIF
-used_gifs = {}
-
-# Список возможных GIF
+# GIF ответом на упоминание
 gif_urls = [
     "https://cdn.discordapp.com/attachments/1346943612373569557/1347573414142939279/attachment.gif",
     "https://cdn.discordapp.com/attachments/1322781202851041358/1347037669388980274/attachment.gif",
     "https://cdn.discordapp.com/attachments/1309799105756790794/1309909672446398534/speechmemified_Half_Life_Deathmatch_Source.jpg.gif",
     "https://tenor.com/view/speech-bubble-gif-26412022",
-    "https://media.discordapp.net/attachments/1055080776808546353/1177601225542352927/attachment.gif"
+    "https://media.discordapp.net/attachments/1055080776808546353/1177601225542352927/attachment.gif",
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367007401115658/attachment.gif?ex=67d12e62&is=67cfdce2&hm=d861e9b134d390a39f71e529b60826e826b3bb9f883c89e6cb200865904cf2cf&",
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348366855894470697/attachment.gif?ex=67d12e3d&is=67cfdcbd&hm=0de0bb1905b43201f1a9d79a698a2c89bfb0bf4d09da89cad9095a0bba63e612&",
+    "https://cdn.jacher.io/f3ac073b88487e1b.gif",
+    "https://cdn.discordapp.com/attachments/1207730830487855154/1348367459392159744/attachment.gif?ex=67d12ecd&is=67cfdd4d&hm=225d51cec802d84090335c6ccbc92ceccfeac3cedd8b946198054399f40c4e45&",
 ]
 
-# Обработчик сообщений в разных каналах
 @bot.event
 async def on_message(message):
     if message.author.bot:
         return
-    
-# Проверяем, что бот упомянут в сообщении, и что сообщение не является ответом на его собственное сообщение
+
     if bot.user in message.mentions and message.reference is None:
-        user_id = message.author.id
-
-        # Если для пользователя уже были использованы все GIF, сбрасываем список
-        if user_id in used_gifs and len(used_gifs[user_id]) == len(gif_urls):
-            used_gifs[user_id] = []  # Сбросить использованные GIF
-
-        # Выбираем GIF, который еще не был использован этим пользователем
-        available_gifs = [gif for gif in gif_urls if gif not in used_gifs.get(user_id, [])]
-        gif_url = random.choice(available_gifs)
-
-        # Добавляем выбранный GIF в список использованных
-        if user_id not in used_gifs:
-            used_gifs[user_id] = []
-        used_gifs[user_id].append(gif_url)
-
+        gif_url = random.choice(gif_urls)  # Просто выбираем случайный GIF
         await message.reply(gif_url)
 
-    # Обрабатываем остальные команды только после обработки сообщений
-    await bot.process_commands(message)
+    await bot.process_commands(message)  # Обрабатываем другие команды
     
     # Проверка сообщений в канале считалки
     if message.channel.id == COUNTING_CHANNEL_ID:
