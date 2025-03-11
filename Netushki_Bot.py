@@ -225,7 +225,7 @@ async def choose_command(
 
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
-    embed.add_field(name="✅ Выбрано", value=f"- {chosen_option}", inline=False)
+    embed.add_field(name="Выбрано", value=f"- {chosen_option}", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
@@ -329,10 +329,10 @@ async def morse(interaction: discord.Interaction, *, text: str):  # Исполь
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}!")
-
     try:
+        bot.tree.clear_commands(guild=None)  # Очистка команд
         await bot.tree.sync()
-        print("Slash-команды синхронизированы!")
+        print("Slash-команды обновлены!")
     except Exception as e:
         print(f"Ошибка синхронизации команд: {e}")
 
