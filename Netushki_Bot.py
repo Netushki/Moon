@@ -264,7 +264,7 @@ async def gif(interaction: discord.Interaction):
     apikey = os.getenv('TENOR_API_KEY')
     ckey = "my_test_app"
     search_term = "geometry dash"
-    lmt = 1
+    lmt = 50
 
     url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
