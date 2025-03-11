@@ -263,29 +263,37 @@ async def gif(interaction: discord.Interaction):
 
     apikey = os.getenv('TENOR_API_KEY')
     ckey = "my_test_app"
-    search_term = "geometry dash"
-    lmt = 10  # Берём больше гифок, чтобы выбрать случайную
+    search_terms = ["geometry dash", "geometry dash meme", "geometry dash level", "geometry dash icon"]  # Разные поисковые запросы
+    lmt = 50  # Запрашиваем 50 гифок
+    max_retries = 3  # Количество попыток для одного запроса
+    max_search_attempts = 3  # Сколько раз менять поисковый запрос
 
-    url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
+    for search_attempt in range(max_search_attempts):  # Меняем поисковый запрос, если все попытки неудачны
+        search_term = random.choice(search_terms)  # Выбираем случайный запрос
+        url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
+        for attempt in range(max_retries):  # Делаем несколько попыток для текущего запроса
+            try:
+                response = requests.get(url)
+                if response.status_code == 200:
+                    data = response.json()
 
-            if 'results' in data and data['results']:
-                # Выбираем случайную гифку из полученного списка
-                gif_url = random.choice(data['results'])['url']
-                await interaction.followup.send(gif_url)
-            else:
-                await interaction.followup.send("Не удалось найти гифку.")
-        else:
-            await interaction.followup.send(f"Ошибка API Tenor: {response.status_code}")
-    except Exception as e:
-        await interaction.followup.send("Произошла ошибка при запросе GIF.")
-        print("Ошибка:", e)
+                    if 'results' in data and data['results']:
+                        gif_url = random.choice(data['results'])['url']  # Выбираем случайную из 100
+                        await interaction.followup.send(gif_url)
+                        return  # Выход из функции после успешного отправления
+                elif response.status_code == 404:
+                    print(f"Попытка {attempt + 1}: API вернул 404. Пробуем ещё раз...")  
+                    continue  # Пробуем снова с тем же запросом
+                else:
+                    print(f"Ошибка API Tenor: {response.status_code}")
+                    break  # Если другая ошибка, прерываем попытки
+            except Exception as e:
+                print("Ошибка:", e)
 
-
+        print(f"Запрос '{search_term}' не дал результатов, пробуем другой...")
+    
+    await interaction.followup.send("Не удалось найти подходящую гифку после нескольких попыток.")
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
