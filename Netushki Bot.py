@@ -7,6 +7,7 @@ from threading import Thread
 from flask import Flask
 import re
 import requests
+from threading import Thread
 
 # Настройки Flask
 app = Flask(__name__)
@@ -15,9 +16,10 @@ app = Flask(__name__)
 def home():
     return 'Bot is running!'
 
-# Запуск Flask в отдельном потоке
-def run_flask():
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 10000)))
+# Асинхронная функция для запуска Flask (Flask не является асинхронным по умолчанию)
+async def run_flask():
+    from werkzeug.serving import run_simple
+    run_simple('0.0.0.0', 10000, app)
 
 # Настройки бота
 intents = discord.Intents.default()
@@ -384,8 +386,10 @@ async def morse(ctx, *, text: str):
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
 
-# Запуск Flask в отдельном потоке
-Thread(target=run_flask).start()
+@bot.event
+async def on_ready():
+    # Запускаем Flask сервер асинхронно
+    asyncio.create_task(run_flask())
 
 # Запуск бота
 bot.run(TOKEN)
