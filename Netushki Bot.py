@@ -320,12 +320,12 @@ async def morse(ctx, *, text: str):
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user}')
-    
-    # Синхронизация команд после успешного подключения
-    await bot.tree.sync()
+    try:
+        await bot.tree.sync(guild=None)  # Синхронизация глобальных команд
+        print("Глобальные команды синхронизированы.")
+    except Exception as e:
+        print(f"Ошибка при синхронизации: {e}")
 
-    print('Commands synced!')
 
 
 # Запуск Flask в отдельном потоке
