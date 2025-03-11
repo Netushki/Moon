@@ -257,31 +257,28 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 # Рандомная гифка гд
 TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 
-@bot.tree.command(name='gdgif', description="Отправляет рандомную GIF про Geometry Dash с Tenor")
+@bot.tree.command(name='gdgif', description="Отправляет случайную GIF про Geometry Dash с Tenor")
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
     apikey = os.getenv('TENOR_API_KEY')
     ckey = "my_test_app"
     search_term = "geometry dash"
-    lmt = 50
+    lmt = 1  # Количество гифок (нам нужна 1)
 
-    url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
+    # Используем эндпоинт random вместо search
+    url = f"https://tenor.googleapis.com/v2/random?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
 
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            data = response.json()  # Разбираем JSON
-            
-            # Выводим JSON в консоль для отладки
-            print("Ответ от Tenor API:", data)
+            data = response.json()
 
-            # Проверяем, есть ли результаты
             if 'results' in data and data['results']:
-                gif_url = data['results'][0]['url']  # Берем URL GIF
-                await interaction.followup.send(gif_url)  # Отправляем ссылку
+                gif_url = data['results'][0]['url']  # Берем случайную гифку
+                await interaction.followup.send(gif_url)
             else:
-                await interaction.followup.send("Гифка не найдена.")
+                await interaction.followup.send("Не удалось найти случайную гифку.")
         else:
             await interaction.followup.send(f"Ошибка API Tenor: {response.status_code}")
     except Exception as e:
