@@ -256,25 +256,33 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 
     await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
 
-# Рандомная гифка
+# Рандомная гифка гд
 TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 
-@bot.tree.command(name='gif', description="Отправляет рандомную GIF с Tenor")
+@bot.tree.command(name='gdgif', description="Отправляет рандомную GIF про Geometry Dash с Tenor")
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
-    url = f"https://api.tenor.com/v1/random?key={TENOR_API_KEY}&tag=&limit=1"
+    search_term = "Geometry Dash"  # Запрос для поиска
+    limit = 1  # Лимит для одного результата
+
+    # Формируем URL для запроса
+    url = f"https://g.tenor.com/v1/random?q={search_term}&key={TENOR_API_KEY}&limit={limit}"
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
                 gif_data = await response.json()  # Дожидаемся JSON-ответа
 
-                # Получаем URL первой гифки из ответа
-                gif_url = gif_data['results'][0]['media'][0]['gif']['url']
-                await interaction.followup.send(gif_url)  # Отправляем гифку
+                # Проверим, что в ответе есть результаты
+                if 'results' in gif_data and len(gif_data['results']) > 0:
+                    gif_url = gif_data['results'][0]['media'][0]['gif']['url']
+                    await interaction.followup.send(gif_url)  # Отправляем гифку
+                else:
+                    await interaction.followup.send("Не удалось найти гифку. Попробуйте снова.")
             else:
-                await interaction.followup.send("Не удалось получить гифку. Попробуйте позже.")
+                await interaction.followup.send(f"Не удалось получить гифку. Статус: {response.status}")
+                print(f"Request failed with status: {response.status}")
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
