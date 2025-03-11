@@ -7,18 +7,23 @@ from threading import Thread
 from flask import Flask
 import re
 import requests
+import threading
 from threading import Thread
+import asyncio
 
-# Настройки Flask
+# Создание Flask-приложения
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'Bot is running!'
+    return "Бот работает!"
 
-# Запуск Flask в отдельном потоке
+# Функция для запуска Flask в отдельном потоке
 def run_flask():
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 10000)))
+    app.run(host="0.0.0.0", port=5000)
+
+# Создаем поток для Flask
+flask_thread = threading.Thread(target=run_flask, daemon=True)
 
 # Настройки бота
 intents = discord.Intents.default()
@@ -236,8 +241,6 @@ async def avatar_command(interaction: discord.Interaction, user: discord.Member)
 
     await interaction.response.send_message(embed=embed)
 
-import asyncio
-
 # Команда таймера
 @bot.tree.command(name="timer", description="Устанавливает таймер, а потом пингует вас")
 @app_commands.describe(seconds="Секунды", minutes="Минуты", hours="Часы")
@@ -318,20 +321,18 @@ async def morse(ctx, *, text: str):
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
 
+# Синхронизация команд при запуске
 @bot.event
 async def on_ready():
+    print(f"Logged in as {bot.user}!")
+
     try:
-        await bot.tree.sync(guild=None)  # Синхронизация глобальных команд
-        print("Глобальные команды синхронизированы.")
+        await bot.tree.sync()
+        print("Slash-команды синхронизированы!")
     except Exception as e:
-        print(f"Ошибка при синхронизации: {e}")
+        print(f"Ошибка синхронизации команд: {e}")
 
-
-
-# Запуск Flask в отдельном потоке
-Thread(target=run_flask).start()
-
-# Запуск бота
+# Запуск бота (Flask уже запущен в отдельном потоке)
 bot.run(TOKEN)
 
 
