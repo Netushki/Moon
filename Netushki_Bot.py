@@ -11,6 +11,7 @@ import threading
 from threading import Thread
 import asyncio
 from googletrans import Translator
+import aiohttp
 
 # Создание Flask-приложения
 app = Flask(__name__)
@@ -259,26 +260,25 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 # Команда рандомных шуток
 @bot.tree.command(name='joke', description="Рандомно генерирует шутку и переводит её на русский")
 async def joke(interaction: discord.Interaction):  
-    # API для случайной шутки
     url = "https://official-joke-api.appspot.com/random_joke"
-    
-    # Получаем шутку из API
-    response = requests.get(url)
-    
-    if response.status_code == 200:
-        joke_data = response.json()
-        setup = joke_data['setup']  # Начало шутки
-        punchline = joke_data['punchline']  # Концовка шутки
-        
-        # Переводим шутку на русский
-        translator = Translator()
-        setup_ru = translator.translate(setup, src='en', dest='ru').text
-        punchline_ru = translator.translate(punchline, src='en', dest='ru').text
-        
-        # Отправляем переведенную шутку
-        await interaction.response.send_message(f"Шутка: {setup_ru} {punchline_ru}")  
-    else:
-        await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                joke_data = await response.json()  # Дожидаемся JSON-ответа
+
+                setup = joke_data.get('setup', 'Неизвестный setup')  
+                punchline = joke_data.get('punchline', 'Неизвестная концовка')
+
+                # Переводим текст
+                translator = Translator()
+                setup_ru = translator.translate(setup, src='en', dest='ru').text
+                punchline_ru = translator.translate(punchline, src='en', dest='ru').text
+
+                # Отправляем шутку
+                await interaction.response.send_message(f"😂 {setup_ru}\n😆 {punchline_ru}")  
+            else:
+                await interaction.response.send_message("Не удалось получить шутку. Попробуйте позже.")
 
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
