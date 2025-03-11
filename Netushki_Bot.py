@@ -3,14 +3,12 @@ import random  # Для генерации случайных значений
 from discord.ext import commands
 from discord import app_commands
 import os
-from threading import Thread
 from flask import Flask
 import re
-import requests
 import threading
-from threading import Thread
 import asyncio
-import aiohttp
+import requests
+import json
 
 # Создание Flask-приложения
 app = Flask(__name__)
@@ -263,26 +261,24 @@ TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
-    search_term = "Geometry Dash"  # Запрос для поиска
-    limit = 1  # Лимит для одного результата
+# set the apikey and limit
+apikey = "AIzaSyBi3cyELEMkerM6bgtKKj4vbe_hDu_JH3A"  # click to set to your apikey
+lmt = 1
+ckey = "my_test_app"  # set the client_key for the integration and use the same value for all API calls
 
-    # Формируем URL для запроса
-    url = f"https://g.tenor.com/v1/random?q={search_term}&key={TENOR_API_KEY}&limit={limit}"
+# our test search
+search_term = "geometry dash"
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            if response.status == 200:
-                gif_data = await response.json()  # Дожидаемся JSON-ответа
+# get the top 8 GIFs for the search term
+r = requests.get(
+    "https://tenor.googleapis.com/v2/search?q=%s&key=%s&client_key=%s&limit=%s" % (search_term, apikey, ckey,  lmt))
 
-                # Проверим, что в ответе есть результаты
-                if 'results' in gif_data and len(gif_data['results']) > 0:
-                    gif_url = gif_data['results'][0]['media'][0]['gif']['url']
-                    await interaction.followup.send(gif_url)  # Отправляем гифку
-                else:
-                    await interaction.followup.send("Не удалось найти гифку. Попробуйте снова.")
-            else:
-                await interaction.followup.send(f"Не удалось получить гифку. Статус: {response.status}")
-                print(f"Request failed with status: {response.status}")
+if r.status_code == 200:
+    # load the GIFs using the urls for the smaller GIF sizes
+    top_8gifs = json.loads(r.content)
+    print(top_8gifs)
+else:
+    top_8gifs = None
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
