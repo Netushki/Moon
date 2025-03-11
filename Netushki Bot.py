@@ -163,19 +163,19 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
 # Команда ссылок
 @bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
 async def links_command(interaction: discord.Interaction):
-    embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
+    embed = discord.Embed(title="Соцсети Netushki", color=discord.Color.blue())
 
     embed.add_field(
-        name="Просмотр",
+        name="**Просмотр**",
         value=(
             "**YouTube:** [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
-            "<:Twitch:1333125928426930236> **Twitch:** [Смотреть](https://www.twitch.tv/snow_netushki)"
+            "**Twitch:** [Смотреть](https://www.twitch.tv/snow_netushki)"
         ),
         inline=False
     )
 
     embed.add_field(
-        name="Посты и чат",
+        name="**Посты и чат**",
         value=(
             "**Telegram Канал:** [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
             "**Discord Сервер:** [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
@@ -184,14 +184,13 @@ async def links_command(interaction: discord.Interaction):
     )
 
     embed.add_field(
-        name="Остальное",
-        value=(
-            "**Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)"
-        ),
+        name="**Остальное**",
+        value="**Донат (Donation Alerts):** [Поддержать](https://www.donationalerts.com/r/netushki)",
         inline=False
     )
 
     await interaction.response.send_message(embed=embed)
+
 
 # Команда выбора рандомного варианта
 @bot.tree.command(name="choose", description="Выбирает случайный вариант из предложенных")
@@ -318,7 +317,7 @@ def to_morse(text):
     return ' '.join(morse_code)
 
 # Команда для преобразования текста в код Морзе (морзе)
-@bot.tree.command(name='morse', help="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
+@bot.tree.command(name='morse', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
 async def morse(ctx, *, text: str):
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await ctx.send(f"Код Морзе: {morse_text}")  # Отправляем результат
