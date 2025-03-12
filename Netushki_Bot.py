@@ -1,5 +1,5 @@
 import discord
-import random
+import random  # Для генерации случайных значений
 from discord.ext import commands
 from discord import app_commands
 import os
@@ -8,8 +8,6 @@ import re
 import threading
 import asyncio
 import requests
-from PIL import Image, ImageDraw, ImageFont
-from io import BytesIO
 
 # Создание Flask-приложения
 app = Flask(__name__)
@@ -342,44 +340,6 @@ def to_morse(text):
 async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await interaction.response.send_message(morse_text)  # Используем send_message для interaction
-
-
-# Функция для добавления текста сверху изображения
-def add_caption(image_url, text):
-    response = requests.get(image_url)
-    image = Image.open(BytesIO(response.content))
-    
-    # Шрифт (можно заменить на другой, если есть)
-    font = ImageFont.truetype("arial.ttf", 40)
-    draw = ImageDraw.Draw(image)
-    
-    # Определяем размеры текста и создаем фон под него
-    text_width, text_height = draw.textsize(text, font=font)
-    new_image = Image.new("RGB", (image.width, image.height + text_height + 20), "white")
-    new_image.paste(image, (0, text_height + 20))
-    
-    # Добавляем текст
-    draw = ImageDraw.Draw(new_image)
-    draw.text(((image.width - text_width) // 2, 10), text, fill="black", font=font)
-    
-    output_buffer = BytesIO()
-    new_image.save(output_buffer, format="PNG")
-    output_buffer.seek(0)
-    return output_buffer
-
-# Команда /подпись
-@bot.tree.command(name="подпись", description="Добавляет текст сверху изображения или гифки")
-@app_commands.describe(text="Текст, который нужно добавить", attachment="Изображение или гиф")
-async def caption_command(interaction: discord.Interaction, text: str, attachment: discord.Attachment = None):
-    if attachment is None:
-        await interaction.user.send("Вы не добавили ни одного вложения")
-        return
-    
-    image_url = attachment.url
-    image_with_caption = add_caption(image_url, text)
-    
-    file = discord.File(image_with_caption, filename="captioned.png")
-    await interaction.response.send_message(file=file)
 
 # Синхронизация команд при запуске
 @bot.event
