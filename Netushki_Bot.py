@@ -1,5 +1,5 @@
 import discord
-import random  # Для генерации случайных значений
+import random
 from discord.ext import commands
 from discord import app_commands
 import os
@@ -8,7 +8,8 @@ import re
 import threading
 import asyncio
 import requests
-import json
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 
 # Создание Flask-приложения
 app = Flask(__name__)
@@ -88,12 +89,12 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # Обработчик слэш-команды /boolean
-@bot.tree.command(name="boolean", description="Случайно выбирает между True и False")
+@bot.tree.command(name="правда", description="Случайно выбирает между True и False")
 @app_commands.describe(question="Вопрос, на который нужно ответить")
 async def boolean_command(interaction: discord.Interaction, question: str = None):
     if question is None:
         question = "Отсутствует"
-    response = random.choice(["True", "False"])
+    response = random.choice(["<:Checkmark:1349434107226226718> <:Checkmark:1349434107226226718> <:Checkmark:1349434107226226718>", "<:Cross:1349434180727210096> <:Cross:1349434180727210096> <:Cross:1349434180727210096>"])
 
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Вопрос", value=question, inline=False)
@@ -102,7 +103,7 @@ async def boolean_command(interaction: discord.Interaction, question: str = None
     await interaction.response.send_message(embed=embed)
 
 # Обработчик слэш-команды /numbersrange
-@bot.tree.command(name="numbersrange", description="Выбирает случайное число в заданном диапазоне")
+@bot.tree.command(name="диапазон", description="Выбирает случайное число в заданном диапазоне")
 @app_commands.describe(start="Начало диапазона (целое число)", end="Конец диапазона (целое число)")
 async def numbersrange_command(interaction: discord.Interaction, start: int, end: int):
     if start > end:
@@ -118,7 +119,7 @@ async def numbersrange_command(interaction: discord.Interaction, start: int, end
     await interaction.response.send_message(embed=embed)
 
 # Обработчик слэш-команды /calculate
-@bot.tree.command(name="calculate", description="Решает примеры")
+@bot.tree.command(name="вычислить", description="Решает примеры")
 @app_commands.describe(number1="Первое число", operator="Оператор (+, -, *, /)", number2="Второе число")
 async def calculate_command(interaction: discord.Interaction, number1: float, operator: str, number2: float):
     try:
@@ -155,15 +156,15 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
 
 
 # Команда ссылок
-@bot.tree.command(name="links", description="Ссылки на соцсети Netushki")
+@bot.tree.command(name="ссылки", description="Ссылки на соцсети Netushki")
 async def links_command(interaction: discord.Interaction):
     embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
 
     embed.add_field(
         name="**Просмотр**",
         value=(
-            "YouTube: [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
-            "Twitch: [Смотреть](https://www.twitch.tv/snow_netushki)"
+            "<:YouTube:1349433807291547648> YouTube: [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
+            "<:Twitch:1349433941525926051> Twitch: [Смотреть](https://www.twitch.tv/snow_netushki)"
         ),
         inline=False
     )
@@ -171,15 +172,15 @@ async def links_command(interaction: discord.Interaction):
     embed.add_field(
         name="**Посты и чат**",
         value=(
-            "Telegram Канал: [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
-            "Discord Сервер: [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
+            "<:Telegram:1349433868264149114> Telegram Канал: [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
+            "<:Discord:1349433896982548613> Discord Сервер: [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
         ),
         inline=False
     )
 
     embed.add_field(
         name="Остальное",
-        value="Донат (Donation Alerts): [Поддержать](https://www.donationalerts.com/r/netushki)",
+        value="<:DonationAlerts:1349433999852044351> Донат (Donation Alerts): [Поддержать](https://www.donationalerts.com/r/netushki)",
         inline=False
     )
 
@@ -187,8 +188,9 @@ async def links_command(interaction: discord.Interaction):
 
 
 # Команда выбора рандомного варианта
-@bot.tree.command(name="choose", description="Выбирает случайный вариант из предложенных")
+@bot.tree.command(name="выбрать", description="Выбирает случайный вариант из предложенных")
 @app_commands.describe(
+    question="Вопрос",
     option1="Обязательный вариант 1",
     option2="Обязательный вариант 2",
     option3="Дополнительный вариант",
@@ -204,6 +206,7 @@ async def choose_command(
     interaction: discord.Interaction,
     option1: str,
     option2: str,
+    question: str = None,
     option3: str = None,
     option4: str = None,
     option5: str = None,
@@ -222,13 +225,14 @@ async def choose_command(
     chosen_option = random.choice(options)  # Выбираем случайный вариант
 
     embed = discord.Embed(color=discord.Color.blue())
+    embed.add_field(name="Вопрос", value=question if question else "Отсутствует", inline=False)
     embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
     embed.add_field(name="Выбрано", value=f"- {chosen_option}", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
 # Команда чтобы получить аватар пользователя
-@bot.tree.command(name="avatar", description="Получает аватар указанного пользователя")
+@bot.tree.command(name="аватар", description="Получает аватар указанного пользователя")
 @app_commands.describe(user="Пользователь, чей аватар вы хотите увидеть")
 async def avatar_command(interaction: discord.Interaction, user: discord.Member):
     embed = discord.Embed(title=f"Вот аватар пользователя {user.display_name}", color=discord.Color.blue())
@@ -237,7 +241,7 @@ async def avatar_command(interaction: discord.Interaction, user: discord.Member)
     await interaction.response.send_message(embed=embed)
 
 # Команда таймера
-@bot.tree.command(name="timer", description="Устанавливает таймер, а потом пингует вас")
+@bot.tree.command(name="таймер", description="Устанавливает таймер, а потом пингует вас")
 @app_commands.describe(seconds="Секунды", minutes="Минуты", hours="Часы")
 async def timer_command(interaction: discord.Interaction, seconds: int = 0, minutes: int = 0, hours: int = 0):
     total_seconds = (hours * 3600) + (minutes * 60) + seconds
@@ -257,7 +261,7 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 # Рандомная гифка гд
 TENOR_API_KEY = os.getenv('TENOR_API_KEY')
 
-@bot.tree.command(name='gdgif', description="Отправляет случайную GIF про Geometry Dash с Tenor")
+@bot.tree.command(name='гдгиф', description="Отправляет случайную GIF про Geometry Dash с Tenor")
 async def gif(interaction: discord.Interaction):  
     await interaction.response.defer()  # Отложенный ответ
 
@@ -334,10 +338,48 @@ def to_morse(text):
     return ' '.join(morse_code)
 
 # Команда для преобразования текста в код Морзе (морзе)
-@bot.tree.command(name='morse', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
+@bot.tree.command(name='морзе', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
 async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await interaction.response.send_message(morse_text)  # Используем send_message для interaction
+
+
+# Функция для добавления текста сверху изображения
+def add_caption(image_url, text):
+    response = requests.get(image_url)
+    image = Image.open(BytesIO(response.content))
+    
+    # Шрифт (можно заменить на другой, если есть)
+    font = ImageFont.truetype("arial.ttf", 40)
+    draw = ImageDraw.Draw(image)
+    
+    # Определяем размеры текста и создаем фон под него
+    text_width, text_height = draw.textsize(text, font=font)
+    new_image = Image.new("RGB", (image.width, image.height + text_height + 20), "white")
+    new_image.paste(image, (0, text_height + 20))
+    
+    # Добавляем текст
+    draw = ImageDraw.Draw(new_image)
+    draw.text(((image.width - text_width) // 2, 10), text, fill="black", font=font)
+    
+    output_buffer = BytesIO()
+    new_image.save(output_buffer, format="PNG")
+    output_buffer.seek(0)
+    return output_buffer
+
+# Команда /подпись
+@bot.tree.command(name="подпись", description="Добавляет текст сверху изображения или гифки")
+@app_commands.describe(text="Текст, который нужно добавить", attachment="Изображение или гиф")
+async def caption_command(interaction: discord.Interaction, text: str, attachment: discord.Attachment = None):
+    if attachment is None:
+        await interaction.user.send("Вы не добавили ни одного вложения")
+        return
+    
+    image_url = attachment.url
+    image_with_caption = add_caption(image_url, text)
+    
+    file = discord.File(image_with_caption, filename="captioned.png")
+    await interaction.response.send_message(file=file)
 
 # Синхронизация команд при запуске
 @bot.event
