@@ -189,23 +189,19 @@ async def choose_command(
 
     num_options = len(options)  # Counting the number of options
 
-    if num_options < 1:
-        await interaction.response.send_message("You entered less than 1 option!", ephemeral=True)
-        return
-
     if num_selected < 1:
-        await interaction.response.send_message("You cannot select less than 1 option!", ephemeral=True)
+        await interaction.response.send_message("You cannot select less than 1 selected option!", ephemeral=True)
         return
 
     if num_selected > num_options:
-        await interaction.response.send_message(f"You can't select more than {num_options} options!", ephemeral=True)
+        await interaction.response.send_message(f"You can't select more selected options than options!", ephemeral=True)
         return
 
     selected_options = random.sample(options, num_selected)  # Selecting the specified number of options
 
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Question ❓", value=question if question else "Missing", inline=False)
-    embed.add_field(name="Number of options 📝", value=str(num_options), inline=False)
+    embed.add_field(name="Number of selected options 📝", value=str(num_options), inline=False)
     embed.add_field(name="Options 💬", value="\n".join(f"- {opt}" for opt in options), inline=False)
     embed.add_field(name="Selected ✅", value="\n".join(f"- {opt}" for opt in selected_options), inline=False)
 
