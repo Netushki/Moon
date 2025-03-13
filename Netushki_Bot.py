@@ -189,12 +189,16 @@ async def choose_command(
 
     num_options = len(options)  # Counting the number of options
 
+    if num_options < 1:
+        await interaction.response.send_message("You entered less than 1 option!", ephemeral=True)
+        return
+
     if num_selected < 1:
-        await interaction.response.send_message("You cannot select less than 1 selected option!", ephemeral=True)
+        await interaction.response.send_message("You cannot select less than 1 option!", ephemeral=True)
         return
 
     if num_selected > num_options:
-        await interaction.response.send_message(f"You can't select more selected options than options!", ephemeral=True)
+        await interaction.response.send_message(f"You can't select more than {num_options} options!", ephemeral=True)
         return
 
     selected_options = random.sample(options, num_selected)  # Selecting the specified number of options
