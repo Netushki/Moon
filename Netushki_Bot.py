@@ -188,9 +188,9 @@ async def choose_command(
     chosen_option = random.choice(options)  # Выбираем случайный вариант
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Question", value=question if question else "Missing", inline=False)
-    embed.add_field(name="Options", value="\n".join(f"- {opt}" for opt in options), inline=False)
-    embed.add_field(name="Selected", value=f"- {chosen_option}", inline=False)
+    embed.add_field(name="Question ❓", value=question if question else "Missing", inline=False)
+    embed.add_field(name="Options 💬", value="\n".join(f"- {opt}" for opt in options), inline=False)
+    embed.add_field(name="Selected ✅", value=f"- {chosen_option}", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
@@ -265,9 +265,9 @@ async def morse(interaction: discord.Interaction, *, text: str):
     morse_text = to_morse(text)
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Text 💬", value=text, inline=False)
-    embed.add_field(name="Morse 👽", value=morse_text, inline=False)
-    embed.set_footer(text='-# If you see "?", it means your character/language is not supported')
+    embed.add_field(name="Text 💬", value=f"`{text}`", inline=False)
+    embed.add_field(name="Morse 👽", value=f"`{morse_text}`", inline=False)
+    embed.set_footer(text='If you see "?", it means your character/language is not supported')
 
     await interaction.response.send_message(embed=embed)
 
