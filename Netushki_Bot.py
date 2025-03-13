@@ -151,40 +151,6 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
     except Exception as e:
         await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
 
-
-
-# Команда ссылок
-@bot.tree.command(name="ссылки", description="Ссылки на соцсети Netushki")
-async def links_command(interaction: discord.Interaction):
-    embed = discord.Embed(title="🔗 Соцсети Netushki", color=discord.Color.blue())
-
-    embed.add_field(
-        name="**Просмотр**",
-        value=(
-            "<:YouTube:1349433807291547648> YouTube: [Смотреть](https://youtube.com/channel/UCsGPCMtrGbO-xHm1P83yQdg)\n"
-            "<:Twitch:1349433941525926051> Twitch: [Смотреть](https://www.twitch.tv/snow_netushki)"
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="**Посты и чат**",
-        value=(
-            "<:Telegram:1349433868264149114> Telegram Канал: [Перейти](https://t.me/+FqErRZgH_rg5YzZi)\n"
-            "<:Discord:1349433896982548613> Discord Сервер: [Присоединиться](https://discord.com/invite/YyPdeKDESa)"
-        ),
-        inline=False
-    )
-
-    embed.add_field(
-        name="Остальное",
-        value="<:DonationAlerts:1349433999852044351> Донат (Donation Alerts): [Поддержать](https://www.donationalerts.com/r/netushki)",
-        inline=False
-    )
-
-    await interaction.response.send_message(embed=embed)
-
-
 # Команда выбора рандомного варианта
 @bot.tree.command(name="выбрать", description="Выбирает случайный вариант из предложенных")
 @app_commands.describe(
