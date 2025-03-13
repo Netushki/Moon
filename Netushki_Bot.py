@@ -156,6 +156,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
     question="Question",
     option1="Required option 1",
     option2="Required option 2",
+    num_selected="Number of selected options",
     option3="Optional option",
     option4="Optional option",
     option5="Optional option",
@@ -169,6 +170,7 @@ async def choose_command(
     interaction: discord.Interaction,
     option1: str,
     option2: str,
+    num_selected: int,
     question: str = None,
     option3: str = None,
     option4: str = None,
@@ -181,16 +183,31 @@ async def choose_command(
 ):
     options = [option1, option2]
     extra_options = [option3, option4, option5, option6, option7, option8, option9, option10]
-    
-    # Добавляем дополнительные опции, если они не пустые
+
+    # Adding extra options if not empty
     options.extend(filter(None, extra_options))
 
-    chosen_option = random.choice(options)  # Выбираем случайный вариант
+    num_options = len(options)  # Counting the number of options
+
+    if num_options < 1:
+        await interaction.response.send_message("You entered less than 1 option!", ephemeral=True)
+        return
+
+    if num_selected < 1:
+        await interaction.response.send_message("You cannot select less than 1 option!", ephemeral=True)
+        return
+
+    if num_selected > num_options:
+        await interaction.response.send_message(f"You can't select more than {num_options} options!", ephemeral=True)
+        return
+
+    selected_options = random.sample(options, num_selected)  # Selecting the specified number of options
 
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Question ❓", value=question if question else "Missing", inline=False)
+    embed.add_field(name="Number of options 📝", value=str(num_options), inline=False)
     embed.add_field(name="Options 💬", value="\n".join(f"- {opt}" for opt in options), inline=False)
-    embed.add_field(name="Selected ✅", value=f"- {chosen_option}", inline=False)
+    embed.add_field(name="Selected ✅", value="\n".join(f"- {opt}" for opt in selected_options), inline=False)
 
     await interaction.response.send_message(embed=embed)
 
