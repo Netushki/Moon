@@ -111,7 +111,7 @@ async def numbersrange_command(interaction: discord.Interaction, start: int, end
     random_number = random.randint(start, end)
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Range ↔", value=f"{start} - {end}", inline=False)
+    embed.add_field(name="Range ↔️", value=f"{start} - {end}", inline=False)
     embed.add_field(name="Selected number ✅", value=str(random_number), inline=False)
 
     await interaction.response.send_message(embed=embed)
@@ -122,7 +122,7 @@ async def numbersrange_command(interaction: discord.Interaction, start: int, end
 async def calculate_command(interaction: discord.Interaction, number1: float, operator: str, number2: float):
     try:
         if operator not in ['+', '-', '*', '/']:
-            raise ValueError("❗Unsupported operator. Use +, -, *, /")
+            raise ValueError("Unsupported operator. Use +, -, *, /")
         
         if operator == '+':
             result = number1 + number2
@@ -132,7 +132,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
             result = number1 * number2
         elif operator == '/':
             if number2 == 0:
-                raise ZeroDivisionError("❗Division by zero is not possible")
+                raise ZeroDivisionError("Division by zero is not possible")
             result = number1 / number2
 
         # Убираем .0, если результат целое число
@@ -189,7 +189,7 @@ async def choose_command(
     chosen_option = random.choice(options)  # Выбираем случайный вариант
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Question", value=question if question else "Отсутствует", inline=False)
+    embed.add_field(name="Question", value=question if question else "Missing", inline=False)
     embed.add_field(name="Options", value="\n".join(f"- {opt}" for opt in options), inline=False)
     embed.add_field(name="Selected", value=f"- {chosen_option}", inline=False)
 
@@ -220,7 +220,7 @@ async def timer_command(interaction: discord.Interaction, seconds: int = 0, minu
 
     await asyncio.sleep(total_seconds)  # Ожидание заданного времени
 
-    await interaction.channel.send(f"{interaction.user.mention}, the timer went off <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R>‼")
+    await interaction.channel.send(f"{interaction.user.mention}, the timer went off <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R>‼️")
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
