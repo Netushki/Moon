@@ -7,7 +7,6 @@ from flask import Flask
 import re
 import threading
 import asyncio
-import requests
 
 # Создание Flask-приложения
 app = Flask(__name__)
@@ -262,9 +261,15 @@ def to_morse(text):
 
 # Команда для преобразования текста в код Морзе (морзе)
 @bot.tree.command(name='morse', description="Converts your text to Morse code, supports both Russian and English, as well as some symbols")
-async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
-    morse_text = to_morse(text)  # Преобразуем текст в код Морзе
-    await interaction.response.send_message(f"`{morse_text}`")  # Используем send_message для interaction
+async def morse(interaction: discord.Interaction, *, text: str):
+    morse_text = to_morse(text)
+
+    embed = discord.Embed(color=discord.Color.blue())
+    embed.add_field(name="Text 💬", value=text, inline=False)
+    embed.add_field(name="Morse 👽", value=morse_text, inline=False)
+    embed.set_footer(text='-# If you see "?", it means your character/language is not supported')
+
+    await interaction.response.send_message(embed=embed)
 
 # Синхронизация команд при запуске
 @bot.event
