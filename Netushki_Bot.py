@@ -1,5 +1,5 @@
 import discord
-import random  # Для генерации случайных значений
+import random
 from discord.ext import commands
 from discord import app_commands
 import os
