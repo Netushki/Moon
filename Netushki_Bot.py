@@ -87,42 +87,42 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # Обработчик слэш-команды /boolean
-@bot.tree.command(name="правда", description="Случайно выбирает между True и False")
-@app_commands.describe(question="Вопрос, на который нужно ответить")
+@bot.tree.command(name="boolean", description="Randomly chooses between True and False")
+@app_commands.describe(question="A question to answer")
 async def boolean_command(interaction: discord.Interaction, question: str = None):
     if question is None:
-        question = "Отсутствует"
-    response = random.choice(["<:Checkmark:1349434107226226718> <:Checkmark:1349434107226226718> <:Checkmark:1349434107226226718>", "<:Cross:1349434180727210096> <:Cross:1349434180727210096> <:Cross:1349434180727210096>"])
+        question = "Missing 💭"
+    response = random.choice(["True ✅", "False ❌"])
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Вопрос", value=question, inline=False)
-    embed.add_field(name="Случайный ответ", value=response, inline=False)
+    embed.add_field(name="Question ❓", value=question, inline=False)
+    embed.add_field(name="Random answer ✨", value=response, inline=False)
 
     await interaction.response.send_message(embed=embed)
 
 # Обработчик слэш-команды /numbersrange
-@bot.tree.command(name="диапазон", description="Выбирает случайное число в заданном диапазоне")
-@app_commands.describe(start="Начало диапазона (целое число)", end="Конец диапазона (целое число)")
+@bot.tree.command(name="range", description="Chooses a random number within a given range")
+@app_commands.describe(start="Start of the range (integer)", end="End of the range (integer)")
 async def numbersrange_command(interaction: discord.Interaction, start: int, end: int):
     if start > end:
-        await interaction.response.send_message("Ошибка: начало диапазона больше конца. Попробуйте снова.", ephemeral=True)
+        await interaction.response.send_message("Error: the start of the range is greater than the end. Try again.", ephemeral=True)
         return
     
     random_number = random.randint(start, end)
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Диапазон", value=f"{start} - {end}", inline=False)
-    embed.add_field(name="Выбранное число", value=str(random_number), inline=False)
+    embed.add_field(name="Range ↔", value=f"{start} - {end}", inline=False)
+    embed.add_field(name="Selected number ✅", value=str(random_number), inline=False)
 
     await interaction.response.send_message(embed=embed)
 
 # Обработчик слэш-команды /calculate
-@bot.tree.command(name="вычислить", description="Решает примеры")
-@app_commands.describe(number1="Первое число", operator="Оператор (+, -, *, /)", number2="Второе число")
+@bot.tree.command(name="calculate", description="Solves math expressions")
+@app_commands.describe(number1="First number", operator="Operator (+, -, *, /)", number2="Second number")
 async def calculate_command(interaction: discord.Interaction, number1: float, operator: str, number2: float):
     try:
         if operator not in ['+', '-', '*', '/']:
-            raise ValueError("Неподдерживаемый оператор. Используйте +, -, *, или /")
+            raise ValueError("❗Unsupported operator. Use +, -, *, /")
         
         if operator == '+':
             result = number1 + number2
@@ -132,7 +132,7 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
             result = number1 * number2
         elif operator == '/':
             if number2 == 0:
-                raise ZeroDivisionError("Деление на ноль невозможно")
+                raise ZeroDivisionError("❗Division by zero is not possible")
             result = number1 / number2
 
         # Убираем .0, если результат целое число
@@ -144,27 +144,27 @@ async def calculate_command(interaction: discord.Interaction, number1: float, op
         number2 = str(int(number2)) if number2.is_integer() else str(number2)
 
         embed = discord.Embed(color=discord.Color.blue())
-        embed.add_field(name="Пример", value=f"{number1} {operator} {number2}", inline=False)
-        embed.add_field(name="Ответ", value=str(result), inline=False)
+        embed.add_field(name="Expression", value=f"{number1} {operator} {number2}", inline=False)
+        embed.add_field(name="Answer", value=str(result), inline=False)
 
         await interaction.response.send_message(embed=embed)
     except Exception as e:
-        await interaction.response.send_message(f"Ошибка: {e}", ephemeral=True)
+        await interaction.response.send_message(f"Error: {e}", ephemeral=True)
 
 # Команда выбора рандомного варианта
-@bot.tree.command(name="выбрать", description="Выбирает случайный вариант из предложенных")
+@bot.tree.command(name="choose", description="Chooses a random option from the provided ones")
 @app_commands.describe(
-    question="Вопрос",
-    option1="Обязательный вариант 1",
-    option2="Обязательный вариант 2",
-    option3="Дополнительный вариант",
-    option4="Дополнительный вариант",
-    option5="Дополнительный вариант",
-    option6="Дополнительный вариант",
-    option7="Дополнительный вариант",
-    option8="Дополнительный вариант",
-    option9="Дополнительный вариант",
-    option10="Дополнительный вариант"
+    question="Question",
+    option1="Required option 1",
+    option2="Required option 2",
+    option3="Optional option",
+    option4="Optional option",
+    option5="Optional option",
+    option6="Optional option",
+    option7="Optional option",
+    option8="Optional option",
+    option9="Optional option",
+    option10="Optional option"
 )
 async def choose_command(
     interaction: discord.Interaction,
@@ -189,79 +189,38 @@ async def choose_command(
     chosen_option = random.choice(options)  # Выбираем случайный вариант
 
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="Вопрос", value=question if question else "Отсутствует", inline=False)
-    embed.add_field(name="Варианты", value="\n".join(f"- {opt}" for opt in options), inline=False)
-    embed.add_field(name="Выбрано", value=f"- {chosen_option}", inline=False)
+    embed.add_field(name="Question", value=question if question else "Отсутствует", inline=False)
+    embed.add_field(name="Options", value="\n".join(f"- {opt}" for opt in options), inline=False)
+    embed.add_field(name="Selected", value=f"- {chosen_option}", inline=False)
 
     await interaction.response.send_message(embed=embed)
 
 # Команда чтобы получить аватар пользователя
-@bot.tree.command(name="аватар", description="Получает аватар указанного пользователя")
-@app_commands.describe(user="Пользователь, чей аватар вы хотите увидеть")
+@bot.tree.command(name="avatar", description="Gets the avatar of the specified user")
+@app_commands.describe(user="The user whose avatar you want to see")
 async def avatar_command(interaction: discord.Interaction, user: discord.Member):
-    embed = discord.Embed(title=f"Вот аватар пользователя {user.display_name}", color=discord.Color.blue())
+    embed = discord.Embed(title=f"Here is the avatar of {user.display_name} 📸", color=discord.Color.blue())
     embed.set_image(url=user.avatar.url if user.avatar else user.default_avatar.url)
 
     await interaction.response.send_message(embed=embed)
 
 # Команда таймера
-@bot.tree.command(name="таймер", description="Устанавливает таймер, а потом пингует вас")
-@app_commands.describe(seconds="Секунды", minutes="Минуты", hours="Часы")
+@bot.tree.command(name="timer", description="Sets a timer and then pings you")
+@app_commands.describe(seconds="Seconds", minutes="Minutes", hours="Hours")
 async def timer_command(interaction: discord.Interaction, seconds: int = 0, minutes: int = 0, hours: int = 0):
     total_seconds = (hours * 3600) + (minutes * 60) + seconds
 
     if total_seconds <= 0:
-        await interaction.response.send_message("Вы не ввели ни секунды, ни минуты, ни часы!", ephemeral=True)
+        await interaction.response.send_message("You haven't entered any seconds, minutes, or hours!", ephemeral=True)
         return
 
     # Формируем текст для встроенного отсчета времени
-    timer_message = f"Таймер сработает через <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R> ⏳"
+    timer_message = f"The timer will go off in <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R> ⏳"
     await interaction.response.send_message(timer_message)
 
     await asyncio.sleep(total_seconds)  # Ожидание заданного времени
 
-    await interaction.channel.send(f"{interaction.user.mention}, таймер сработал! ⏰")
-
-# Рандомная гифка гд
-TENOR_API_KEY = os.getenv('TENOR_API_KEY')
-
-@bot.tree.command(name='гдгиф', description="Отправляет случайную GIF про Geometry Dash с Tenor")
-async def gif(interaction: discord.Interaction):  
-    await interaction.response.defer()  # Отложенный ответ
-
-    apikey = os.getenv('TENOR_API_KEY')
-    ckey = "my_test_app"
-    search_terms = ["geometry dash", "geometry dash meme", "geometry dash level", "geometry dash icon"]  # Разные поисковые запросы
-    lmt = 50  # Запрашиваем 50 гифок
-    max_retries = 3  # Количество попыток для одного запроса
-    max_search_attempts = 3  # Сколько раз менять поисковый запрос
-
-    for search_attempt in range(max_search_attempts):  # Меняем поисковый запрос, если все попытки неудачны
-        search_term = random.choice(search_terms)  # Выбираем случайный запрос
-        url = f"https://tenor.googleapis.com/v2/search?q={search_term}&key={apikey}&client_key={ckey}&limit={lmt}"
-
-        for attempt in range(max_retries):  # Делаем несколько попыток для текущего запроса
-            try:
-                response = requests.get(url)
-                if response.status_code == 200:
-                    data = response.json()
-
-                    if 'results' in data and data['results']:
-                        gif_url = random.choice(data['results'])['url']  # Выбираем случайную из 100
-                        await interaction.followup.send(gif_url)
-                        return  # Выход из функции после успешного отправления
-                elif response.status_code == 404:
-                    print(f"Попытка {attempt + 1}: API вернул 404. Пробуем ещё раз...")  
-                    continue  # Пробуем снова с тем же запросом
-                else:
-                    print(f"Ошибка API Tenor: {response.status_code}")
-                    break  # Если другая ошибка, прерываем попытки
-            except Exception as e:
-                print("Ошибка:", e)
-
-        print(f"Запрос '{search_term}' не дал результатов, пробуем другой...")
-    
-    await interaction.followup.send("Не удалось найти подходящую гифку после нескольких попыток.")
+    await interaction.channel.send(f"{interaction.user.mention}, the timer went off <t:{int((interaction.created_at.timestamp()) + total_seconds)}:R>‼")
 
 # Словарь с кодом Морзе для каждой буквы, цифры и знаков препинания (латиница + кириллица) (морзе)
 morse_code_dict = {
@@ -302,7 +261,7 @@ def to_morse(text):
     return ' '.join(morse_code)
 
 # Команда для преобразования текста в код Морзе (морзе)
-@bot.tree.command(name='морзе', description="Превращает ваш текст в код морзе, поддерживается русский и английский, а также некоторые символы")
+@bot.tree.command(name='morse', description="Converts your text to Morse code, supports both Russian and English, as well as some symbols")
 async def morse(interaction: discord.Interaction, *, text: str):  # Используем interaction вместо ctx
     morse_text = to_morse(text)  # Преобразуем текст в код Морзе
     await interaction.response.send_message(f"`{morse_text}`")  # Используем send_message для interaction
@@ -323,4 +282,4 @@ flask_thread = threading.Thread(target=run_flask, daemon=True)
 flask_thread.start()
 
 # Запускаем бота
-bot.run(TOKEN)  # Замените на свой токен бота
+bot.run(TOKEN)
