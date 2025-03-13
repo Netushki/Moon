@@ -205,7 +205,7 @@ async def choose_command(
 
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name="Question ❓", value=question if question else "Missing", inline=False)
-    embed.add_field(name="Number of selected options 📝", value=str(num_options), inline=False)
+    embed.add_field(name="Number of selected options 📝", value=str(num_selected), inline=False)
     embed.add_field(name="Options 💬", value="\n".join(f"- {opt}" for opt in options), inline=False)
     embed.add_field(name="Selected ✅", value="\n".join(f"- {opt}" for opt in selected_options), inline=False)
 
