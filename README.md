@@ -1,2 +1,2 @@
-# Netushki-Bot
-My Discord bot - Netushki Bot
+# Moon
+My Discord bot - Moon
